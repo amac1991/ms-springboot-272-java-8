@@ -15,6 +15,19 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
+import io.fusion.air.microservice.domain.entities.order.OrderEntity;
+import io.fusion.air.microservice.domain.entities.order.OrderItemEntity;
+import io.fusion.air.microservice.domain.entities.order.OrderPaymentEntity;
+import io.fusion.air.microservice.domain.entities.order.ShippingAddress;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  *
  * @author: Araf Karsh Hamid
@@ -22,19 +35,14 @@ package io.fusion.air.microservice.adapters.service;
  * @date:
  */
 
-/**
-@SpringBootTest
 class OrderServiceImplTest {
-
-    @Autowired
-    private OrderService orderService;
 
     private OrderEntity order;
 
     @BeforeEach
     void setUp() {
         List<OrderItemEntity> items = new ArrayList<OrderItemEntity>();
-        items.add(new OrderItemEntity());
+        items.add(new OrderItemEntity("P001", "Product 1", BigDecimal.ONE, new BigDecimal("29.99")));
         order = OrderEntity.builder()
                 .addCustomerId("123")
                 .addOrderItems(items)
@@ -45,6 +53,7 @@ class OrderServiceImplTest {
 
     @Test
     void requestCreditApproval() {
+        assertNotNull(order);
+        assertEquals("123", order.getCustomerId());
     }
 }
- */
