@@ -1,6 +1,5 @@
 package io.fusion.air.microservice.server.service;
 
-import com.jayway.jsonpath.internal.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +21,8 @@ public class MyService3 {
     private EchoAppService echoAppService;
 
     public void printData() {
-        System.out.println("MyService3:Request-Scope: " + Utils.toString(echoService.getEchoData()));
-        System.out.println("MyService3:Session-Scope: " + Utils.toString(echoSessionService.getEchoData()));
-        System.out.println("MyService3:Apps----Scope: " + Utils.toString(echoAppService.getEchoData()));
+        System.out.println("MyService3:Request-Scope: " + String.valueOf(echoService.getEchoData()));
+        System.out.println("MyService3:Session-Scope: " + String.valueOf(echoSessionService.getEchoData()));
+        System.out.println("MyService3:Apps----Scope: " + String.valueOf(echoAppService.getEchoData()));
     }
 }
