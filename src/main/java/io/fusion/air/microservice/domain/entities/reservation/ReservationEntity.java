@@ -19,7 +19,7 @@ import io.fusion.air.microservice.domain.entities.core.springdata.AbstractBaseEn
 import io.fusion.air.microservice.domain.statemachine.reservation.ReservationResult;
 import io.fusion.air.microservice.domain.statemachine.reservation.ReservationState;
 // Java & Persistence
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
