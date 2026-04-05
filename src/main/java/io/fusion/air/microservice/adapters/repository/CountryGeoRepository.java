@@ -16,6 +16,7 @@
 package io.fusion.air.microservice.adapters.repository;
 
 import io.fusion.air.microservice.domain.entities.order.CountryGeoEntity;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +29,7 @@ import java.util.Optional;
  * @date:
  */
 @Repository
-public interface CountryGeoRepository extends PagingAndSortingRepository<CountryGeoEntity, Integer> {
+public interface CountryGeoRepository extends PagingAndSortingRepository<CountryGeoEntity, Integer>, ListCrudRepository<CountryGeoEntity, Integer> {
 
     /**
      * Find By Country Geo Name ID
