@@ -17,9 +17,8 @@ package io.fusion.air.microservice.domain.entities.core.mdc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 /**
@@ -34,11 +33,10 @@ public class AbstractBaseEntityWithUUID extends AbstractBaseEntity {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "uuid", columnDefinition = "char(36)", unique = true)
-    @Type(type = "org.hibernate.type.UUIDCharType")
+    // Hibernate 6 handles UUID natively - @Type annotation no longer needed
     // Use the Below type if you are using PostgreSQL Database Exclusively
     // And Change the table script UUID data type to uuid
     // @Column(name = "uuid", columnDefinition = "uuid", unique = true)
-    // @Type(type = "org.hibernate.type.PostgresUUIDType")
     private UUID uuid;
     // @Size(min = 36, max = 36, message = "The length of ID Name must be 36 characters.")
     // @Pattern(regexp = "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$", message = "Invalid UUID")

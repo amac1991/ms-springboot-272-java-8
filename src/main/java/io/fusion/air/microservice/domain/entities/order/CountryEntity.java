@@ -17,8 +17,8 @@ package io.fusion.air.microservice.domain.entities.order;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @author: Araf Karsh Hamid
