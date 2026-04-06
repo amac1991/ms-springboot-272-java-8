@@ -6,13 +6,14 @@
 #
 # Container Name: ms-cache-service
 #
-# Microservices Containers - SpringBoot 2.7.0 / Java 17
+# Microservices Containers - SpringBoot 3.4.4 / Java 21
 #
-# Version 0.1
+# Version 0.2
 #################################################################
 # Base Version
 #FROM metamagic/java:8
-FROM metamagic/java:17
+#FROM metamagic/java:17
+FROM eclipse-temurin:21-jre
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
