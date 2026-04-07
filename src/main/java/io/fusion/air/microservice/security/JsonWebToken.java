@@ -23,10 +23,12 @@ import java.util.function.Function;
 
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.MacAlgorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 
@@ -82,8 +84,9 @@ public final class JsonWebToken {
 	private Key signingKey;
 	private Key validatorKey;
 
-	private SignatureAlgorithm algorithm;
-	public final static SignatureAlgorithm defaultAlgo = SignatureAlgorithm.HS512;
+	private io.jsonwebtoken.security.SecureDigestAlgorithm<?, ?> algorithm;
+	private String algorithmJcaName;
+	public final static io.jsonwebtoken.security.MacAlgorithm defaultAlgo = Jwts.SIG.HS512;
 
 	private final Map<String, Object> claimsToken;
 	private final Map<String, Object> claimsRefreshToken;
@@ -117,7 +120,8 @@ public final class JsonWebToken {
 	public JsonWebToken init(int _tokenType) {
 		tokenType 			= _tokenType;
 		// Set the Algo Symmetric (Secret) OR Asymmetric (Public/Private) based on the Configuration
-		algorithm 			= (tokenType == SECRET_KEY) ? SignatureAlgorithm.HS512 : SignatureAlgorithm.RS256;
+		algorithm 			= (tokenType == SECRET_KEY) ? Jwts.SIG.HS512 : Jwts.SIG.RS256;
+		algorithmJcaName	= (tokenType == SECRET_KEY) ? "HmacSHA512" : "SHA256withRSA";
 
 		System.out.println("Token Type = "+tokenType+" Algorithm = "+algorithm);
 		// Create the Key based on Secret Key or Private Key
@@ -138,7 +142,7 @@ public final class JsonWebToken {
 	private void createSigningKey() {
 		switch(tokenType) {
 			case SECRET_KEY:
-				signingKey = new SecretKeySpec(getTokenKeyBytes(), algorithm.getJcaName());
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), algorithmJcaName);
 				validatorKey = signingKey;
 				break;
 			case PUBLIC_KEY:
@@ -352,7 +356,7 @@ public final class JsonWebToken {
 	 * Returns the Algorithm
 	 * @return
 	 */
-	public SignatureAlgorithm getAlgorithm() {
+	public io.jsonwebtoken.security.SecureDigestAlgorithm<?, ?> getAlgorithm() {
 		return algorithm;
 	}
 
@@ -415,18 +419,23 @@ public final class JsonWebToken {
 	 * @param algorithm
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public String generateToken(String _userId, String _issuer, long _expiryTime,
-								Map<String, Object> _claims, Key key, SignatureAlgorithm algorithm) {
+								Map<String, Object> _claims, Key key, io.jsonwebtoken.security.SecureDigestAlgorithm<?, ?> algorithm) {
 		long currentTime = System.currentTimeMillis();
-		return Jwts.builder()
-				.setSubject(_userId)
-				.setIssuer(_issuer)
-				.setClaims(_claims)
-				.setIssuedAt(new Date(currentTime))
-				.setExpiration(new Date(currentTime + _expiryTime))
-				// Key Secret Key or Public/Private Key
-				.signWith(key, algorithm)
-				.compact();
+		var builder = Jwts.builder()
+				.subject(_userId)
+				.issuer(_issuer)
+				.claims().add(_claims).and()
+				.issuedAt(new Date(currentTime))
+				.expiration(new Date(currentTime + _expiryTime));
+		// Key Secret Key or Public/Private Key
+		if (key instanceof SecretKey secretKey) {
+			builder.signWith(secretKey, (MacAlgorithm) algorithm);
+		} else if (key instanceof PrivateKey privateKey) {
+			builder.signWith(privateKey, (io.jsonwebtoken.security.SignatureAlgorithm) algorithm);
+		}
+		return builder.compact();
 	}
 
     /**
@@ -507,7 +516,8 @@ public final class JsonWebToken {
      * @return
      */
     public String getAudienceFromToken(String _token) {
-        return getClaimFromToken(_token, Claims::getAudience);
+        Set<String> audience = getAllClaims(_token).getAudience();
+        return (audience != null && !audience.isEmpty()) ? audience.iterator().next() : null;
     }
 
 	/**
@@ -567,15 +577,7 @@ public final class JsonWebToken {
      * @return
      */
     public Claims getAllClaims(String _token) {
-    	/**
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
-				.requireIssuer(issuer)
-				.build()
-				.parseClaimsJws(_token)
-				.getBody();
-		 */
-    	return (Claims) getJws(_token).getBody();
+    	return getJws(_token).getPayload();
     }
 
 	/**
@@ -583,12 +585,13 @@ public final class JsonWebToken {
 	 * @param _token
 	 * @return
 	 */
-	public Jws getJws(String _token) {
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
+	@SuppressWarnings("unchecked")
+	public Jws<Claims> getJws(String _token) {
+		return Jwts.parser()
+				.verifyWith((SecretKey) validatorKey)
 				.requireIssuer(issuer)
 				.build()
-				.parseClaimsJws(_token);
+				.parseSignedClaims(_token);
 	}
 	/**
 	 * Print Token Stats

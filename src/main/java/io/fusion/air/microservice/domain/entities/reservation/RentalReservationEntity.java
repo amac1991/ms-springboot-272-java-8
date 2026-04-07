@@ -20,7 +20,7 @@ import io.fusion.air.microservice.domain.entities.core.springdata.AbstractBaseEn
 import io.fusion.air.microservice.domain.models.reservation.RentalType;
 import io.fusion.air.microservice.domain.statemachine.reservation.ReservationState;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 /**

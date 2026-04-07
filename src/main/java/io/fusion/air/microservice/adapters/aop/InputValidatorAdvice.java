@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException _manvEx,
-                                      HttpHeaders _headers, HttpStatus _status, WebRequest _request) {
+                                      HttpHeaders _headers, HttpStatusCode _status, WebRequest _request) {
 
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AK";
         String errorMsg = "Input Errors: Invalid Method Arguments";
@@ -81,7 +82,7 @@ public class InputValidatorAdvice extends ResponseEntityExceptionHandler {
             } catch (Exception ignored) {}
         });
         Collections.sort(errors);
-        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix,"461", _status,errorMsg);
+        StandardResponse stdResponse = Utils.createErrorResponse(errors, errorPrefix,"461", HttpStatus.valueOf(_status.value()),errorMsg);
         logTime(startTime, status);
         return new ResponseEntity<>(stdResponse, _headers, HttpStatus.BAD_REQUEST);
     }

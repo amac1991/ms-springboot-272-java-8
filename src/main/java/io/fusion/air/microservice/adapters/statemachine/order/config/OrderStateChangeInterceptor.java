@@ -94,7 +94,7 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
                             }
                             orderHistoryService.saveOrderHistory(source, target, event, order, errorObj);
                         } catch (Exception e) {
-                            log.error("ERROR in OrderStateChangeListener! "+e.getMessage(),e);
+                            log.error("ERROR in OrderStateChangeListener! {}", e.getMessage(), e);
                             e.printStackTrace();
                         } finally {
                             // Log the State Change

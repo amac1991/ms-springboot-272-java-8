@@ -15,9 +15,9 @@
  */
 package io.fusion.air.microservice;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.fusion.air.microservice.adapters.aop.ExceptionHandlerAdvice;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
@@ -26,7 +26,7 @@ import io.fusion.air.microservice.server.controllers.HealthController;
 import org.slf4j.Logger;
 
 // Spring Framework
-import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -174,7 +174,7 @@ public class ServiceBootStrap {
 	 */
 	@GetMapping("/root")
 	public String home(HttpServletRequest request) {
-		log.info("Request to Home Page of Service... "+printRequestURI(request));
+		log.info("Request to Home Page of Service... {}", printRequestURI(request));
 		return (serviceConfig == null) ? this.title :
 				this.title.replaceAll("MICRO", serviceConfig.getServiceName())
 						.replaceAll("COMPANY", serviceConfig.getServiceOrg())
@@ -192,12 +192,12 @@ public class ServiceBootStrap {
 		StringBuilder sb = new StringBuilder();
 		sb.append("URI: ").append(request.getRequestURI());
 		String[] req = request.getRequestURI().split("/");
-		sb.append("Params Size = "+req.length+" : ");
+		sb.append("Params Size = ").append(req.length).append(" : ");
 		for(int x=0; x < req.length; x++) {
 			sb.append(req[x]).append("|");
 		}
 		sb.append("\n");
-		log.info("HttpServletRequest: ["+sb.toString()+"]");
+		log.info("HttpServletRequest: [{}]", sb);
 		return sb.toString();
 	}
 
