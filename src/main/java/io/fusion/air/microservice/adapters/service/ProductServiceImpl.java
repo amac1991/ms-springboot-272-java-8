@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
                 memoryLeakList.add(product);
             }
         }
-        log.info("LEAK NUMBER = "+leakNumber+" IN = "+productList.size()+" TT = "+memoryLeakList.size()+ CPU.printCpuStats());
+        log.info("LEAK NUMBER = {} IN = {} TT = {}{}", leakNumber, productList.size(), memoryLeakList.size(), CPU.printCpuStats());
     }
 
 
@@ -200,11 +200,8 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public ProductEntity getProductById(UUID productId) {
-        Optional<ProductEntity> productDb = productRepository.findById(productId);
-        if(productDb.isPresent()) {
-            return productDb.get();
-        }
-        throw new DataNotFoundException("Data not found with id : " + productId);
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found with id : " + productId));
     }
 
     /**

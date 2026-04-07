@@ -92,7 +92,7 @@ public class KafkaConsumerService {
      */
     public Map<String, List<MemberDescription>> getConsumerGroupsAndMembers(String... groupIds) {
         try (AdminClient admin = AdminClient.create(kafkaAdmin.getConfigurationProperties())) {
-            Collection<String> groupIdList = Arrays.asList(groupIds);
+            Collection<String> groupIdList = List.of(groupIds);
             DescribeConsumerGroupsResult describeConsumerGroupsResult = admin.describeConsumerGroups(groupIdList);
 
             Map<String, KafkaFuture<ConsumerGroupDescription>> futures = describeConsumerGroupsResult.describedGroups();

@@ -97,10 +97,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public Optional<OrderEntity> findById(String customerId, String orderId) {
         Optional<OrderEntity> o = orderRepository.findByCustomerIdAndOrderId(customerId, Utils.getUUID(orderId));
-        if(o.isPresent()) {
-            return o;
+        if(o.isEmpty()) {
+            throw new DataNotFoundException("Order Not Found for OrderId=" + orderId);
         }
-        throw new DataNotFoundException("Order Not Found for OrderId="+orderId);
+        return o;
     }
 
     /**
@@ -114,10 +114,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public Optional<OrderEntity> findById(String customerId, UUID orderId) {
         Optional<OrderEntity> o = orderRepository.findByCustomerIdAndOrderId(customerId, orderId);
-        if(o.isPresent()) {
-            return o;
+        if(o.isEmpty()) {
+            throw new DataNotFoundException("Order Not Found for OrderId=" + orderId);
         }
-        throw new DataNotFoundException("Order Not Found for OrderId="+orderId);    }
+        return o;
+    }
 
     /**
      * Save Order
@@ -145,14 +146,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderEntity resetOrder(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Reset Order ID = "+orderId);
-        if(orderOpt.isPresent()) {
-            OrderEntity order = orderOpt.get();
-            order.resetOrderState();
-            orderRepository.save(order);
-            return order;
-        }
-        throw new DataNotFoundException("Order Not Found for "+orderId);
+        log.info("Reset Order ID = {}", orderId);
+        OrderEntity order = orderOpt.orElseThrow(() -> new DataNotFoundException("Order Not Found for " + orderId));
+        order.resetOrderState();
+        orderRepository.save(order);
+        return order;
     }
 
     /**
@@ -164,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderEntity processCreditApproval(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("[1] Process Order ID = "+orderId);
+        log.info("[1] Process Order ID = {}", orderId);
         orderStateMachineService.creditCheckRequest(orderOpt.get());
         return orderOpt.get();
     }
@@ -197,7 +195,7 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessServiceException("Invalid Event for OrderProcessing!");
         }
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Handle Event "+orderEvent+" For Order ID = "+orderId);
+        log.info("Handle Event {} For Order ID = {}", orderEvent, orderId);
         System.out.println("--------------------------------------------------------------------------------------------------");
         System.out.println("(1) INCOMING EVENT == (OrderServiceImpl) === ["+orderEvent.name()+"] ======= >> OrderID = "+orderId);
         System.out.println("--------------------------------------------------------------------------------------------------");
@@ -291,7 +289,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public OrderEntity processPaymentRequest(String customerId, String orderId) {
         Optional<OrderEntity> orderOpt = findById( customerId,  orderId);
-        log.info("Process Order ID = "+orderId);
+        log.info("Process Order ID = {}", orderId);
         orderStateMachineService.paymentInit(orderOpt.get());
         return orderOpt.get();
     }

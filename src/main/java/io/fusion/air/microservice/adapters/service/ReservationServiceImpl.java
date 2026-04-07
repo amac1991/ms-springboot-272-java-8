@@ -109,10 +109,10 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public Optional<ReservationEntity> findById(String customerId, String reservationId) {
         Optional<ReservationEntity> o = reservationRepository.findByCustomerIdAndReservationId(customerId, Utils.getUUID(reservationId));
-        if(o.isPresent()) {
-            return o;
+        if(o.isEmpty()) {
+            throw new DataNotFoundException("reservation Not Found for reservationId=" + reservationId);
         }
-        throw new DataNotFoundException("reservation Not Found for reservationId="+reservationId);
+        return o;
     }
 
     /**
@@ -126,10 +126,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public Optional<ReservationEntity> findById(String customerId, UUID reservationId) {
         Optional<ReservationEntity> o = reservationRepository.findByCustomerIdAndReservationId(customerId, reservationId);
-        if(o.isPresent()) {
-            return o;
+        if(o.isEmpty()) {
+            throw new DataNotFoundException("reservation Not Found for reservationId=" + reservationId);
         }
-        throw new DataNotFoundException("reservation Not Found for reservationId="+reservationId);    }
+        return o;
+    }
 
     /**
      * Save Reservation
@@ -157,14 +158,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationEntity resetReservation(String customerId, String reservationId) {
         Optional<ReservationEntity> reservationOpt = findById( customerId,  reservationId);
-        log.info("Reset reservation ID = "+reservationId);
-        if(reservationOpt.isPresent()) {
-            ReservationEntity reservation = reservationOpt.get();
-            reservation.resetState();
-            reservationRepository.save(reservation);
-            return reservation;
-        }
-        throw new DataNotFoundException("reservation Not Found for "+reservationId);
+        log.info("Reset reservation ID = {}", reservationId);
+        ReservationEntity reservation = reservationOpt.orElseThrow(() -> new DataNotFoundException("reservation Not Found for " + reservationId));
+        reservation.resetState();
+        reservationRepository.save(reservation);
+        return reservation;
     }
 
 
@@ -196,7 +194,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new BusinessServiceException("Invalid Event for Reservation Processing!");
         }
         Optional<ReservationEntity> reservationOpt = findById( customerId,  reservationId);
-        log.info("Handle Event "+reservationEvent+" For reservation ID = "+reservationId);
+        log.info("Handle Event {} For reservation ID = {}", reservationEvent, reservationId);
         System.out.println("--------------------------------------------------------------------------------------------------");
         System.out.println("(1) INCOMING EVENT == (reservationServiceImpl) === ["+reservationEvent.name()+"] ======= >> reservationId = "+reservationId);
         System.out.println("--------------------------------------------------------------------------------------------------");
