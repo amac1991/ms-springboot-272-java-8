@@ -583,8 +583,13 @@ public final class JsonWebToken {
 	 * @return
 	 */
 	public Jws<Claims> getJws(String _token) {
-		return Jwts.parser()
-				.verifyWith((javax.crypto.SecretKey) validatorKey)
+		JwtParserBuilder parserBuilder = Jwts.parser();
+		if (validatorKey instanceof javax.crypto.SecretKey) {
+			parserBuilder.verifyWith((javax.crypto.SecretKey) validatorKey);
+		} else if (validatorKey instanceof java.security.PublicKey) {
+			parserBuilder.verifyWith((java.security.PublicKey) validatorKey);
+		}
+		return parserBuilder
 				.requireIssuer(issuer)
 				.build()
 				.parseSignedClaims(_token);

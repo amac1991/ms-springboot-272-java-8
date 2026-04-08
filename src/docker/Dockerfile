@@ -16,9 +16,10 @@ FROM eclipse-temurin:21-jre-alpine
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+RUN addgroup -S poduser && adduser -S poduser -G poduser
+RUN mkdir -p /Softwares/service
+RUN mkdir -p /Softwares/service/libs
+RUN mkdir -p /home/poduser/libs
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar

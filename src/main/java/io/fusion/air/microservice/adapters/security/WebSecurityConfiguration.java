@@ -51,7 +51,7 @@ public class WebSecurityConfiguration {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(apiPath + "/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .exceptionHandling(ex -> ex.accessDeniedPage("/403"))
             .csrf(csrf -> csrf.disable())
@@ -93,3 +93,4 @@ public class WebSecurityConfiguration {
         }
     }
 }
+
