@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.PublicKey;
 
 
 /**
@@ -580,10 +581,14 @@ public final class JsonWebToken {
 	 * @return
 	 */
 	public Jws<Claims> getJws(String _token) {
-		return Jwts.parser()
-				.verifyWith((SecretKey) validatorKey)
-				.requireIssuer(issuer)
-				.build()
+		JwtParserBuilder parserBuilder = Jwts.parser()
+				.requireIssuer(issuer);
+		if (validatorKey instanceof SecretKey) {
+			parserBuilder.verifyWith((SecretKey) validatorKey);
+		} else if (validatorKey instanceof PublicKey) {
+			parserBuilder.verifyWith((PublicKey) validatorKey);
+		}
+		return parserBuilder.build()
 				.parseSignedClaims(_token);
 	}
 	/**
