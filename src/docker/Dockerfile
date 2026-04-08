@@ -17,9 +17,10 @@ FROM eclipse-temurin:21-jre
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+# Create poduser (existed in old metamagic/java base image)
+RUN groupadd --system poduser && useradd --system --gid poduser --create-home poduser
+RUN mkdir -p /Softwares/service/libs
+RUN mkdir -p /home/poduser/libs
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar
