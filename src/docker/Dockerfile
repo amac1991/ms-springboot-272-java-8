@@ -6,19 +6,20 @@
 #
 # Container Name: ms-cache-service
 #
-# Microservices Containers - SpringBoot 2.7.0 / Java 17
+# Microservices Containers - SpringBoot 3.3.x / Java 21
 #
 # Version 0.1
 #################################################################
 # Base Version
 #FROM metamagic/java:8
-FROM metamagic/java:17
+FROM eclipse-temurin:21-jre-alpine
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+RUN addgroup -S poduser && adduser -S poduser -G poduser
+RUN mkdir -p /Softwares/service
+RUN mkdir -p /Softwares/service/libs
+RUN mkdir -p /home/poduser/libs
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar
@@ -45,5 +46,5 @@ USER poduser
 
 # Start Microservice
 #ENTRYPOINT ["java","-jar","/Softwares/service/ms-cache-service-thin.jar"]
-ENTRYPOINT ["java","-jar","/Softwares/service/ms-cache-service-spring-boot.jar"]
+ENTRYPOINT ["java", "--add-opens=java.base/java.lang=ALL-UNNAMED", "-jar", "/Softwares/service/ms-cache-service-spring-boot.jar"]
 
