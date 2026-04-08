@@ -17,9 +17,9 @@ package io.fusion.air.microservice.domain.entities.order;
 
 import io.fusion.air.microservice.domain.entities.core.springdata.AbstractBaseEntityWithUUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * @author: Araf Karsh Hamid

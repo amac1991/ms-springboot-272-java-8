@@ -22,7 +22,7 @@ import io.fusion.air.microservice.domain.statemachine.reservation.ReservationNot
 import io.fusion.air.microservice.domain.statemachine.reservation.ReservationState;
 import io.fusion.air.microservice.utils.Utils;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * To Keep Track of Order States and its Transitions based on Order Event
