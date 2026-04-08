@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,8 +83,9 @@ public final class JsonWebToken {
 	private Key signingKey;
 	private Key validatorKey;
 
-	private SignatureAlgorithm algorithm;
-	public final static SignatureAlgorithm defaultAlgo = SignatureAlgorithm.HS512;
+	private String algorithmName;
+	public final static String DEFAULT_HMAC_ALGO = "HmacSHA512";
+	public final static String DEFAULT_RSA_ALGO = "RS256";
 
 	private final Map<String, Object> claimsToken;
 	private final Map<String, Object> claimsRefreshToken;
@@ -117,9 +119,9 @@ public final class JsonWebToken {
 	public JsonWebToken init(int _tokenType) {
 		tokenType 			= _tokenType;
 		// Set the Algo Symmetric (Secret) OR Asymmetric (Public/Private) based on the Configuration
-		algorithm 			= (tokenType == SECRET_KEY) ? SignatureAlgorithm.HS512 : SignatureAlgorithm.RS256;
+		algorithmName 		= (tokenType == SECRET_KEY) ? DEFAULT_HMAC_ALGO : DEFAULT_RSA_ALGO;
 
-		System.out.println("Token Type = "+tokenType+" Algorithm = "+algorithm);
+		System.out.println("Token Type = "+tokenType+" Algorithm = "+algorithmName);
 		// Create the Key based on Secret Key or Private Key
 		createSigningKey();
 
@@ -138,7 +140,7 @@ public final class JsonWebToken {
 	private void createSigningKey() {
 		switch(tokenType) {
 			case SECRET_KEY:
-				signingKey = new SecretKeySpec(getTokenKeyBytes(), algorithm.getJcaName());
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), algorithmName);
 				validatorKey = signingKey;
 				break;
 			case PUBLIC_KEY:
@@ -349,11 +351,11 @@ public final class JsonWebToken {
 	}
 
 	/**
-	 * Returns the Algorithm
+	 * Returns the Algorithm Name
 	 * @return
 	 */
-	public SignatureAlgorithm getAlgorithm() {
-		return algorithm;
+	public String getAlgorithmName() {
+		return algorithmName;
 	}
 
 	/**
@@ -400,7 +402,7 @@ public final class JsonWebToken {
 	 * @return
 	 */
     public String generateToken(String _userId, String _issuer, long _expiryTime, Map<String, Object> _claims) {
-		return generateToken( _userId,  _issuer,  _expiryTime, _claims, signingKey, algorithm);
+		return generateToken( _userId,  _issuer,  _expiryTime, _claims, signingKey, algorithmName);
 
     }
 
@@ -416,16 +418,16 @@ public final class JsonWebToken {
 	 * @return
 	 */
 	public String generateToken(String _userId, String _issuer, long _expiryTime,
-								Map<String, Object> _claims, Key key, SignatureAlgorithm algorithm) {
+								Map<String, Object> _claims, Key key, String algorithmName) {
 		long currentTime = System.currentTimeMillis();
 		return Jwts.builder()
-				.setSubject(_userId)
-				.setIssuer(_issuer)
-				.setClaims(_claims)
-				.setIssuedAt(new Date(currentTime))
-				.setExpiration(new Date(currentTime + _expiryTime))
+				.subject(_userId)
+				.issuer(_issuer)
+				.claims().add(_claims).and()
+				.issuedAt(new Date(currentTime))
+				.expiration(new Date(currentTime + _expiryTime))
 				// Key Secret Key or Public/Private Key
-				.signWith(key, algorithm)
+				.signWith(key)
 				.compact();
 	}
 
@@ -506,7 +508,7 @@ public final class JsonWebToken {
      * @param _token
      * @return
      */
-    public String getAudienceFromToken(String _token) {
+    public Set<String> getAudienceFromToken(String _token) {
         return getClaimFromToken(_token, Claims::getAudience);
     }
 
@@ -567,15 +569,7 @@ public final class JsonWebToken {
      * @return
      */
     public Claims getAllClaims(String _token) {
-    	/**
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
-				.requireIssuer(issuer)
-				.build()
-				.parseClaimsJws(_token)
-				.getBody();
-		 */
-    	return (Claims) getJws(_token).getBody();
+    	return getJws(_token).getPayload();
     }
 
 	/**
@@ -583,12 +577,12 @@ public final class JsonWebToken {
 	 * @param _token
 	 * @return
 	 */
-	public Jws getJws(String _token) {
-		return Jwts.parserBuilder()
-				.setSigningKey(validatorKey)
+	public Jws<Claims> getJws(String _token) {
+		return Jwts.parser()
+				.verifyWith((javax.crypto.SecretKey) validatorKey)
 				.requireIssuer(issuer)
 				.build()
-				.parseClaimsJws(_token);
+				.parseSignedClaims(_token);
 	}
 	/**
 	 * Print Token Stats
@@ -624,11 +618,11 @@ public final class JsonWebToken {
 		System.out.println("Expiry   = "+getExpiryDateFromToken(token));
 		System.out.println("Expired  = "+isTokenExpired(token));
 		System.out.println("----------------------------------------------");
-		Jws jws = getJws(token);
+		Jws<Claims> jws = getJws(token);
 
 		System.out.println("Header     : " + jws.getHeader());
-		System.out.println("Body       : " + jws.getBody());
-		System.out.println("Signature  : " + jws.getSignature());
+		System.out.println("Body       : " + jws.getPayload());
+		System.out.println("Signature  : " + jws.getDigest());
 		if(showClaims) {
 			Claims claims = getAllClaims(token);
 			int x = 1;
