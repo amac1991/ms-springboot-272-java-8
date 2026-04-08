@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.server.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import io.fusion.air.microservice.adapters.security.AuthorizationRequired;
 import io.fusion.air.microservice.domain.exceptions.InputDataException;
