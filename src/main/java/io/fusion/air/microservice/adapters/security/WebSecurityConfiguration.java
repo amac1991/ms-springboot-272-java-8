@@ -23,16 +23,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.io.IOException;
 
@@ -54,25 +52,23 @@ public class WebSecurityConfiguration {
         String apiPath = serviceConfig.getApiDocPath();
         String hostName = serviceConfig.getServerHost();
 
-        http.authorizeRequests()
-                .antMatchers(apiPath + "/**")
-                .permitAll()
-                .and()
-                .exceptionHandling().accessDeniedPage("/403");
-
-        // Disabled for Local Testing
-        http.csrf().disable();
-
-        // X-Frame-Options
-        http.headers().frameOptions().deny();
-
-        // Content Security Policy
-        http.headers()
-                .contentSecurityPolicy(
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(apiPath + "/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .accessDeniedPage("/403")
+            )
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> {
+                headers.frameOptions(frameOptions -> frameOptions.deny());
+                headers.contentSecurityPolicy(csp -> csp.policyDirectives(
                         "default-src 'self'; "
                         +"script-src 'self' *."+hostName+"; "
                         +"object-src 'self' *."+hostName+"; "
-                        +"img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'");
+                        +"img-src 'self'; media-src 'self'; frame-src 'self'; font-src 'self'; connect-src 'self'"));
+            });
 
         return http.build();
     }
@@ -83,7 +79,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(
+        return (web) -> web.ignoring().requestMatchers(
                 "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
     }
 

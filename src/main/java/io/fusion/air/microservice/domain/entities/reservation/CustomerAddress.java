@@ -15,8 +15,8 @@
  */
 package io.fusion.air.microservice.domain.entities.reservation;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author: Araf Karsh Hamid

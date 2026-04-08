@@ -21,7 +21,7 @@ import io.fusion.air.microservice.domain.statemachine.order.OrderEvent;
 import io.fusion.air.microservice.domain.statemachine.order.OrderState;
 import io.fusion.air.microservice.utils.Utils;
 // Java X Persistence
-import javax.persistence.*;
+import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
