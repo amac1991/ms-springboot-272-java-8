@@ -104,8 +104,7 @@ public class RestClientService  extends RestTemplate {
         HttpComponentsClientHttpRequestFactory factory
                 = new HttpComponentsClientHttpRequestFactory();
         log.debug("Initialized RestClientService.... setRequestFactory()... 3");
-        factory.setConnectTimeout(10000);
-        factory.setReadTimeout(10000);
+        factory.setConnectTimeout(java.time.Duration.ofMillis(10000));
         log.debug("Initialized RestClientService.... setRequestFactory()... 4");
         return factory;
     }

@@ -15,7 +15,7 @@
  */
 package io.fusion.air.microservice.domain.models.order;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**

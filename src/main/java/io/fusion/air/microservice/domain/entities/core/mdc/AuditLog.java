@@ -26,7 +26,7 @@ import org.slf4j.MDC;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 /**
