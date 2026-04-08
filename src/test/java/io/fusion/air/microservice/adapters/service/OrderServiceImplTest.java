@@ -15,6 +15,20 @@
  */
 package io.fusion.air.microservice.adapters.service;
 
+import io.fusion.air.microservice.domain.entities.order.OrderEntity;
+import io.fusion.air.microservice.domain.entities.order.OrderItemEntity;
+import io.fusion.air.microservice.domain.entities.order.OrderPaymentEntity;
+import io.fusion.air.microservice.domain.entities.order.ShippingAddress;
+import io.fusion.air.microservice.domain.ports.services.OrderService;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author: Araf Karsh Hamid
@@ -22,7 +36,6 @@ package io.fusion.air.microservice.adapters.service;
  * @date:
  */
 
-/**
 @SpringBootTest
 class OrderServiceImplTest {
 
@@ -47,4 +60,3 @@ class OrderServiceImplTest {
     void requestCreditApproval() {
     }
 }
- */
