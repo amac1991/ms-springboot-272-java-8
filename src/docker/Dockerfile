@@ -15,9 +15,10 @@ FROM eclipse-temurin:21-jre-alpine
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+# Create non-root user and required directories (previously provided by metamagic/java base image)
+RUN addgroup -S poduser && adduser -S poduser -G poduser \
+    && mkdir -p /Softwares/service/libs /home/poduser/libs \
+    && chown -R poduser:poduser /Softwares /home/poduser
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar
