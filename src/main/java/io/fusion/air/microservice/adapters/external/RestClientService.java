@@ -105,7 +105,7 @@ public class RestClientService  extends RestTemplate {
                 = new HttpComponentsClientHttpRequestFactory();
         log.debug("Initialized RestClientService.... setRequestFactory()... 3");
         factory.setConnectTimeout(10000);
-        factory.setReadTimeout(10000);
+        // setReadTimeout removed in Spring 6; use setConnectionRequestTimeout or configure via HttpClient
         log.debug("Initialized RestClientService.... setRequestFactory()... 4");
         return factory;
     }
