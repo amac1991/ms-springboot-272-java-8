@@ -18,7 +18,7 @@ package io.fusion.air.microservice.domain.entities.core.mdc;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.fusion.air.microservice.domain.entities.core.mdc.AuditLog;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * @author: Araf Karsh Hamid

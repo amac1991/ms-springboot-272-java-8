@@ -17,10 +17,10 @@
 
 ### Pre-Requisites 
 
-1. Springboot 2.7.2
-2. Java 8, Java 17 (To run)
+1. Springboot 3.2.5
+2. Java 21 (To build and run)
 3. Kafka 3.x (3.7.0)
-3. Java EE (javax.servlet.*, javax.persistence.*, javax.validation.*)
+3. Jakarta EE (jakarta.servlet.*, jakarta.persistence.*, jakarta.validation.*)
 4. Maven 3.8.6
 5. Git 2.31
 
@@ -384,4 +384,4 @@ Setup the Docker Hub or any other Container Registry
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-</pre> 
+</pre>  
