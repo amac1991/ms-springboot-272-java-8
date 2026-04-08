@@ -53,7 +53,7 @@ public class WebSecurityConfiguration {
         String apiPath = serviceConfig.getApiDocPath();
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(apiPath + "/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         )
         .exceptionHandling(ex -> ex.accessDeniedPage("/403"));
 
@@ -99,3 +99,4 @@ public class WebSecurityConfiguration {
         }
     }
 }
+
