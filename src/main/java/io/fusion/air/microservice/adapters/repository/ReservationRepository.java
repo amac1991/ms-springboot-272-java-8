@@ -17,6 +17,7 @@ package io.fusion.air.microservice.adapters.repository;
 
 import io.fusion.air.microservice.domain.entities.reservation.ReservationEntity;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -31,7 +32,7 @@ import java.util.UUID;
  * @date:
  */
 @Repository
-public interface ReservationRepository extends PagingAndSortingRepository<ReservationEntity, UUID> {
+public interface ReservationRepository extends PagingAndSortingRepository<ReservationEntity, UUID>, CrudRepository<ReservationEntity, UUID> {
 
 
     /**
