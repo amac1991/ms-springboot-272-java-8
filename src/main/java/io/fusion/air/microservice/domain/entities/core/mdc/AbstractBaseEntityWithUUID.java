@@ -17,6 +17,8 @@ package io.fusion.air.microservice.domain.entities.core.mdc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.*;
 import java.util.UUID;
@@ -33,7 +35,8 @@ public class AbstractBaseEntityWithUUID extends AbstractBaseEntity {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "uuid", columnDefinition = "char(36)", unique = true)
-    // Hibernate 6: @Type annotation no longer needed for UUID; native UUID support
+    @JdbcTypeCode(SqlTypes.CHAR)
+    // Hibernate 6: @JdbcTypeCode(SqlTypes.CHAR) replaces @Type(type = "org.hibernate.type.UUIDCharType")
     // Use the Below column definition if you are using PostgreSQL Database Exclusively
     // @Column(name = "uuid", columnDefinition = "uuid", unique = true)
     private UUID uuid;
