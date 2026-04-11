@@ -6,19 +6,20 @@
 #
 # Container Name: ms-cache-service
 #
-# Microservices Containers - SpringBoot 2.7.0 / Java 17
+# Microservices Containers - SpringBoot 3.2.x / Java 21
 #
 # Version 0.1
 #################################################################
 # Base Version
 #FROM metamagic/java:8
-FROM metamagic/java:17
+FROM eclipse-temurin:21-jre-jammy
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+# Create poduser (non-root) and required directories
+RUN groupadd -r poduser && useradd -r -g poduser -d /home/poduser -m poduser
+RUN mkdir -p /Softwares/service/libs
+RUN mkdir -p /home/poduser/libs
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar

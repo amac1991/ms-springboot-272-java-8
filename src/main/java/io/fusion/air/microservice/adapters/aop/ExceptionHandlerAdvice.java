@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,7 +38,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -70,9 +71,11 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(
                 Exception ex, @Nullable Object body,
-                HttpHeaders headers, HttpStatus status, WebRequest request) {
+                HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        HttpStatus status = HttpStatus.resolve(statusCode.value());
+        if (status == null) status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
-            request.setAttribute("javax.servlet.error.exception", ex, 0);
+            request.setAttribute("jakarta.servlet.error.exception", ex, 0);
         }
         return createErrorResponse(ex, headers, status, request);
     }
