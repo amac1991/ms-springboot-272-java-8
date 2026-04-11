@@ -23,6 +23,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author: Araf Karsh Hamid
@@ -84,7 +85,9 @@ public class ClaimsManager {
      * @return
      */
     public String getAudience() {
-        return  (claims != null) ? (String) claims.get("aud") : "";
+        if (claims == null) return "";
+        Set<String> aud = claims.getAudience();
+        return (aud != null && !aud.isEmpty()) ? aud.iterator().next() : "";
     }
 
     /**
