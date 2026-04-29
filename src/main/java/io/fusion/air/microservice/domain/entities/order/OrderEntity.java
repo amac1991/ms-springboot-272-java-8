@@ -20,7 +20,7 @@ import io.fusion.air.microservice.domain.entities.core.springdata.AbstractBaseEn
 import io.fusion.air.microservice.domain.statemachine.order.OrderResult;
 import io.fusion.air.microservice.domain.statemachine.order.OrderState;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
