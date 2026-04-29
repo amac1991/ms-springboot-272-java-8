@@ -20,7 +20,7 @@ import io.fusion.air.microservice.security.JsonWebToken;
 import io.fusion.air.microservice.server.config.ServiceConfiguration;
 import io.fusion.air.microservice.server.config.ServiceHelp;
 
-import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
