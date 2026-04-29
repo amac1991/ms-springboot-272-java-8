@@ -143,7 +143,7 @@ public final class JsonWebToken {
 	private void createSigningKey() {
 		switch(tokenType) {
 			case SECRET_KEY:
-				signingKey = new SecretKeySpec(getTokenKeyBytes(), ((MacAlgorithm) algorithm).getId().startsWith("HS") ? "HmacSHA512" : "HmacSHA256");
+				signingKey = new SecretKeySpec(getTokenKeyBytes(), "HmacSHA" + ((MacAlgorithm) algorithm).getId().substring(2));
 				validatorKey = signingKey;
 				break;
 			case PUBLIC_KEY:
