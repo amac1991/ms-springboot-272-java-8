@@ -31,8 +31,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.sql.DataSource;
 
 /**
  * @author: Araf Karsh Hamid

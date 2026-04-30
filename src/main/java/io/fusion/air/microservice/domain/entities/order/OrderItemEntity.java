@@ -17,7 +17,7 @@ package io.fusion.air.microservice.domain.entities.order;
 
 import io.fusion.air.microservice.domain.entities.core.springdata.AbstractBaseEntityWithUUID;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 /**
