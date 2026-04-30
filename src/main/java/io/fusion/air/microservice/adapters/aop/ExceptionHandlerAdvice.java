@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.AccessDeniedException;
@@ -70,11 +71,11 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(
                 Exception ex, @Nullable Object body,
-                HttpHeaders headers, HttpStatus status, WebRequest request) {
+                HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
             request.setAttribute("jakarta.servlet.error.exception", ex, 0);
         }
-        return createErrorResponse(ex, headers, status, request);
+        return createErrorResponse(ex, headers, HttpStatus.valueOf(status.value()), request);
     }
 
     /**
