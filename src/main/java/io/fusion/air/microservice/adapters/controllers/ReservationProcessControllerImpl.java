@@ -35,7 +35,7 @@ import org.springframework.web.context.annotation.RequestScope;
 // Java / utils
 import org.slf4j.Logger;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import static java.lang.invoke.MethodHandles.lookup;

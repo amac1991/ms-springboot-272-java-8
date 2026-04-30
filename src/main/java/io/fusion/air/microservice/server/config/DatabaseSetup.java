@@ -31,7 +31,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 /**
@@ -53,15 +53,11 @@ public class DatabaseSetup {
      * @return
      */
     public DataSource dataSource() {
-        switch(dbConfig.getDataSourceVendor()) {
-            case DatabaseConfig.DB_H2:
-                return h2DataSource();
-            case DatabaseConfig.DB_POSTGRESQL:
-                return postgreSQLDataSource();
-        }
-        // Returns H2 Database if Nothing Matches
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder.setType(EmbeddedDatabaseType.H2).build();
+        return switch (dbConfig.getDataSourceVendor()) {
+            case DatabaseConfig.DB_H2 -> h2DataSource();
+            case DatabaseConfig.DB_POSTGRESQL -> postgreSQLDataSource();
+            default -> new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+        };
     }
 
     /**

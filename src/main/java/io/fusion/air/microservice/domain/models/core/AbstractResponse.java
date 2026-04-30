@@ -87,8 +87,8 @@ public abstract class AbstractResponse implements Serializable {
     public AbstractResponse setPayload(Object _payload) {
         ArrayList<Object> data = new ArrayList<Object>();
         if(_payload != null) {
-            if(_payload instanceof List) {
-                this.payload = _payload;
+            if(_payload instanceof List<?> list) {
+                this.payload = list;
                 return this;
             } else {
                 data.add(_payload);
