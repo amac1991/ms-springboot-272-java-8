@@ -57,7 +57,7 @@ public class WebSecurityConfiguration {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(apiPath + "/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .exceptionHandling(exception -> exception
                 .accessDeniedPage("/403")
