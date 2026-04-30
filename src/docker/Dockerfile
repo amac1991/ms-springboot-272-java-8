@@ -6,25 +6,24 @@
 #
 # Container Name: ms-cache-service
 #
-# Microservices Containers - SpringBoot 2.7.0 / Java 17
+# Microservices Containers - SpringBoot 3.2.5 / Java 21
 #
-# Version 0.1
+# Version 0.2
 #################################################################
 # Base Version
-#FROM metamagic/java:8
-FROM metamagic/java:17
+FROM eclipse-temurin:21-jre-alpine
 
 LABEL author="Araf Karsh Hamid <araf.karsh@metamagic.in>"
 
-RUN mkdir /Softwares/service
-RUN mkdir /Softwares/service/libs
-RUN mkdir /home/poduser/libs
+RUN addgroup -S poduser && adduser -S poduser -G poduser
+RUN mkdir -p /Softwares/service
+RUN mkdir -p /Softwares/service/libs
+RUN mkdir -p /home/poduser/libs && chown -R poduser:poduser /home/poduser
 
 ARG SPRINGBOOT_JAR=ms-cache-service-spring-boot.jar
 ARG MAVEN_JAR=ms-cache-service-thin.jar
 
 # Copy Service (Install)
-# COPY --chown=poduser:poduser StartService /Softwares/service/
 COPY --chown=poduser:poduser application.properties /home/poduser/
 COPY --chown=poduser:poduser application.properties /Softwares/service/
 # SpringBoot Fat Jar
@@ -44,6 +43,4 @@ EXPOSE 9090
 USER poduser
 
 # Start Microservice
-#ENTRYPOINT ["java","-jar","/Softwares/service/ms-cache-service-thin.jar"]
-ENTRYPOINT ["java","-jar","/Softwares/service/ms-cache-service-spring-boot.jar"]
-
+ENTRYPOINT ["java", "-XX:+UseZGC", "-XX:+ZGenerational", "-jar", "/Softwares/service/ms-cache-service-spring-boot.jar"]

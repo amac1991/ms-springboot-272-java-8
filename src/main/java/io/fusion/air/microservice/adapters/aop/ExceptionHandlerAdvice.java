@@ -151,8 +151,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
         String errorPrefix = (serviceConfig != null) ? serviceConfig.getServiceAPIErrorPrefix() : "AK";
         String errorCode = errorPrefix+_errorCode;
-        if(_exception instanceof AbstractServiceException) {
-            AbstractServiceException ase = (AbstractServiceException)_exception;
+        if(_exception instanceof AbstractServiceException ase) {
             ase.setErrorCode(errorCode);
         }
         logException(errorCode,  _exception);
