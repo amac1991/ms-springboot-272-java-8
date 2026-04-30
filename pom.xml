@@ -22,13 +22,13 @@
 	<!-- =================================================================== -->
 	<properties>
 		<!-- Java Version ================================================== -->
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 
 		<!-- Maven ========================================================= -->
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 
-		<maven-compiler-plugin>3.8.1</maven-compiler-plugin>
+		<maven-compiler-plugin>3.12.1</maven-compiler-plugin>
 		<maven-dependency-plugin>3.3.0</maven-dependency-plugin>
 		<maven-jar-plugin>3.2.2</maven-jar-plugin>
 		<maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
@@ -38,16 +38,16 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Utilities ===================================================== -->
-		<slf4j.version>1.7.36</slf4j.version>
-		<logback.version>1.2.11</logback.version>
-		<google.guava.version>31.1-jre</google.guava.version>
+		<slf4j.version>2.0.12</slf4j.version>
+		<logback.version>1.4.14</logback.version>
+		<google.guava.version>33.0.0-jre</google.guava.version>
 		<apache.httpcore>4.5.13</apache.httpcore>
 		<apache.commons.version>3.12.0</apache.commons.version>
-		<fasterxml.version>2.13.3</fasterxml.version>
+		<fasterxml.version>2.16.1</fasterxml.version>
 		<javax.bean.validation.version>2.0.1.Final</javax.bean.validation.version>
 		<jwt.api.version>0.11.5</jwt.api.version>
 		<google.gson.version>2.9.0</google.gson.version>
-		<bouncycastle.version>1.46</bouncycastle.version>
+		<bouncycastle.version>1.78.1</bouncycastle.version>
 
 		<!-- Spring Libraries ============================================== -->
 		<spring.boot.version>2.7.2</spring.boot.version>
@@ -62,7 +62,7 @@
 		<openapi.version>1.6.9</openapi.version>
 
 		<!-- Lombok - DON'T OVER USE IT =================================== -->
-		<lombok.version>1.18.28</lombok.version>
+		<lombok.version>1.18.32</lombok.version>
 
 	</properties>
 
@@ -367,7 +367,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.14</version>
+			<version>42.7.2</version>
 		</dependency>
 
 
@@ -401,7 +401,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>2.1.214</version>
+			<version>2.2.224</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -432,7 +432,7 @@
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
+			<artifactId>bcprov-jdk18on</artifactId>
 			<version>${bouncycastle.version}</version>
 		</dependency>
 
@@ -584,6 +584,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
